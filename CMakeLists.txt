@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 # ---- Project ----
 
 # Note: update this to your new project's name and version
-project(Greeter 
+project(Lomuto
   VERSION 1.0
   LANGUAGES CXX
 )
@@ -26,31 +26,33 @@ CPMAddPackage(
   VERSION 1.2
 )
 
-# ---- Add source files ----
+CPMAddPackage(
+        NAME range-v3
+        URL https://github.com/ericniebler/range-v3/archive/0.10.0.zip
+        VERSION 0.10.0
+        # the range-v3 CMakeLists screws with configuration options
+        DOWNLOAD_ONLY True
+)
 
-# Note: globbing sources is considered bad practice as CMake's generators may not detect new files automatically.
-# Keep that in mind when changing files, or explicitly mention them here.
-FILE(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
-FILE(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
+if(range-v3_ADDED)
+    add_library(range-v3 INTERFACE IMPORTED)
+    target_include_directories(range-v3 INTERFACE "${range-v3_SOURCE_DIR}/include")
+endif()
 
 # ---- Create library ----
 
 # Note: for header-only libraries change all PUBLIC flags to INTERFACE and create an interface target:
-# add_library(Greeter INTERFACE)  
-# set_target_properties(Greeter PROPERTIES INTERFACE_COMPILE_FEATURES cxx_std_17)
-
-add_library(Greeter ${headers} ${sources})
-
-set_target_properties(Greeter PROPERTIES CXX_STANDARD 17)
+add_library(Lomuto INTERFACE)
+set_target_properties(Lomuto PROPERTIES INTERFACE_COMPILE_FEATURES cxx_std_20)
 
 # beeing a cross-platform target, we enforce standards conformance on MSVC
-target_compile_options(Greeter PUBLIC "$<$<BOOL:${MSVC}>:/permissive->")
+target_compile_options(Lomuto INTERFACE "$<$<BOOL:${MSVC}>:/permissive->")
 
 # Link dependencies (if required)
-# target_link_libraries(Greeter PUBLIC cxxopts)
+target_link_libraries(Lomuto INTERFACE range-v3)
 
-target_include_directories(Greeter
-  PUBLIC
+target_include_directories(Lomuto
+  INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
