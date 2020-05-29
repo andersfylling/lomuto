@@ -6,7 +6,6 @@
 
 namespace lomuto{
   namespace {
-
 /**
 Partitions the range [first, last) around a pivot chosen as the minimum of
 first[0] and last[-1]. Uses the Lomuto partition algorithm, branch-free.
@@ -15,14 +14,14 @@ Returns: a pointer to the new position of the pivot.
     template <ranges::random_access_iterator It>
     It lomuto_partition_branchfree(It begin, It end) {
       assert(begin <= end);
-      if (std::distance(begin, end) < 2) {
+      if (end - begin < 2) {
         return begin; // nothing interesting to do
       }
 
       // Choose pivot.
       --end;
       if (*begin > *end) {
-        std::iter_swap(begin, end);
+        std::swap(*begin, *end);
       }
       auto pivot_pos{begin};
       auto pivot{*begin};
@@ -37,7 +36,7 @@ Returns: a pointer to the new position of the pivot.
       for (auto read{begin + 1}; read < end; ++read) {
         auto x{*read};
         auto less{-int(x < pivot)};
-        auto delta{less & std::distance(begin, read)};
+        auto delta{less & (read - begin)};
         begin[delta] = *begin;
         read[-delta] = x;
         begin -= less;
@@ -85,8 +84,7 @@ least one element smaller than *last.
           size_t n = i - first - 1;
           do {
             first[n + 1] = first[n];
-          }
-          while (n--);
+          } while (n--);
           *first = val;
         } else {
           unguarded_linear_insert(i);

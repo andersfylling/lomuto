@@ -4,6 +4,9 @@ project(LomutoBenchmarks
   LANGUAGES CXX
 )
 
+set("CMAKE_BUILD_TYPE" "Release")
+set("BENCHMARK_ENABLE_LTO" "true")
+
 # ---- Options ----
 
 option(ENABLE_TEST_COVERAGE "Enable test coverage" OFF)
@@ -42,6 +45,7 @@ CPMAddPackage(
 
 if (benchmark_ADDED)
   set_target_properties(benchmark PROPERTIES CXX_STANDARD 20)
+  target_compile_options(benchmark PUBLIC -Wall -pedantic -Wextra -Wno-error) # otherwise it will fail to build
 endif()
 
 # ---- Create binary ----

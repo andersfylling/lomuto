@@ -25,8 +25,10 @@ static void BM_Sorting(benchmark::State& state) {
         state.ResumeTiming();
 
         if constexpr(STANDARD) {
+          //std::sort(&v.front(), 1 + &v.back());
           std::sort(v.begin(), v.end());
         } else {
+          //lomuto::sort(&v.front(), 1 + &v.back());
           lomuto::sort(v.begin(), v.end());
         }
     }

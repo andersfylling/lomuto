@@ -38,6 +38,17 @@ CPMAddPackage(
   VERSION 1.3
 )
 
+#CPMAddPackage(
+#  NAME nanobench
+#  GITHUB_REPOSITORY martinus/nanobench
+#  VERSION 3.1.0
+#)
+#
+#if(nanobench_ADDED)
+#  add_library(nanobench INTERFACE IMPORTED)
+#  target_include_directories(nanobench INTERFACE "${nanobench_SOURCE_DIR}/src/include")
+#endif()
+
 # ---- Create binary ----
 
 file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
